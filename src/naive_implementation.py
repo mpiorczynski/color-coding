@@ -3,10 +3,11 @@ import networkx as nx
 import math
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 seed = 123
 n = 10
-k = 5
+k = 10
 
 random.seed(seed)
 np.random.seed(seed)
@@ -57,11 +58,21 @@ def color_coding(graph, tree):
 
 
 if __name__ == "__main__":
+
     # generate random graph using erdos renyi model
-    graph = nx.erdos_renyi_graph(n, p=0.1, seed=seed) 
+    graph = nx.erdos_renyi_graph(n, p=0.1, seed=seed)
+
+    fig = plt.figure()
+    nx.draw(graph, with_labels=False, width=0.1, node_size=10, ax=fig.add_subplot())
+    fig.savefig("graph.png")
 
     # generate random tree
     tree = nx.random_tree(k, seed=seed)
 
+    fig = plt.figure()
+    nx.draw(tree, with_labels=True, node_size=10, ax=fig.add_subplot())
+    fig.savefig("tree.png")
+
     # run color coding
-    color_coding(graph, tree)
+    flag = color_coding(graph, tree)
+    print(f"Is there a subtree with {k} vertices in the graph?: {flag}")
