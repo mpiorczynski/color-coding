@@ -35,15 +35,22 @@ def find_colors(graph, node, tree, root):
             colors2 = find_colors(graph, node_neighbor, subtree2, root_neighbour)
             if colors1.isdisjoint(colors2):
                 colors = colors.union(colors1).union(colors2)
-        return(colors)
+        
+        return colors
 
 
 def color_coding(graph, tree):
-    root = random.choice(range(len(tree.nodes)))
-    for node in range(len(graph.nodes)):
-        colors = find_colors(graph, node, tree, root)
-        if colors:
-            return True
+    k = len(tree.nodes)
+    for _ in range(math.ceil(math.exp(k))):
+        # random coloring
+        for v in graph.nodes:
+            graph.nodes[v]['color'] = random.choice(range(k))
+
+        root = random.choice(range(k))
+        for node in range(len(graph.nodes)):
+            colors = find_colors(graph, node, tree, root)
+            if colors:
+                return True
 
     return False
 
@@ -52,10 +59,6 @@ def color_coding(graph, tree):
 if __name__ == "__main__":
     # generate random graph using erdos renyi model
     graph = nx.erdos_renyi_graph(n, p=0.1, seed=seed) 
-
-    # color its nodes
-    for v in graph.nodes:
-        graph.nodes[v]['color'] = random.choice(range(k))
 
     # generate random tree
     tree = nx.random_tree(k, seed=seed)
