@@ -27,3 +27,15 @@ python src/main.py
     doi = {10.1145/195058.195179}
 }
 ```
+```bibtex
+@article{alon2008biomolecular,
+  title={Biomolecular network motif counting and discovery by color coding},
+  author={Alon, Noga and Dao, Phuong and Hajirasouliha, Iman and Hormozdiari, Fereydoun and Sahinalp, S Cenk},
+  journal={Bioinformatics},
+  volume={24},
+  number={13},
+  pages={i241--i249},
+  year={2008},
+  publisher={Oxford University Press}
+}
+```
