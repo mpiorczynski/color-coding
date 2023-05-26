@@ -1,4 +1,5 @@
 """Implementation of color coding for finding a subtree with k vertices in a graph using dynamic programming."""
+from re import sub
 import networkx as nx
 import math
 import random
@@ -8,65 +9,56 @@ from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
 import argparse
 from texttable import Texttable
+from traitlets import default
+from collections import defaultdict
 
-
-def find_colors(graph, node, tree, root, memory):
-    # print(f"Tree root: {root}")
-    # print(f"Tree nodes: {tree.nodes}")
-
-    if len(tree.nodes) == 1:
-        return([{graph.nodes[node]['color']}])
+def generate_k_vertex_subtrees(tree, root, k, visited=None):
+    """Generate all k-vertices rooted subtrees of a tree with DFS with limited by k depth."""
+    if k == 1:
+        subtree = nx.Graph()
+        subtree.add_node(root)
+        yield subtree
     else:
-        colors = []
-        tree = tree.copy()
-
-        root_neighbour = random.choice(list(tree.neighbors(root)))
-        # print(f"Splitting at: ({root}, {root_neighbour})")
-        tree.remove_edge(root, root_neighbour)
-
-        subtree1, subtree2 = (tree.subgraph(c).copy() for c in nx.connected_components(tree))  # components sorted by size
-        if root_neighbour in subtree1.nodes:
-            subtree1, subtree2 = subtree2, subtree1
-        
-        subtree1_key = (node, subtree1, root)
-        if subtree1_key not in memory:
-            memory[subtree1_key] = find_colors(graph, node, subtree1, root, memory)
-        
-        colors1 = memory[subtree1_key]
-
-        # print(colors1)
-        for node_neighbor in graph.neighbors(node):
-            subtree2_key = (node_neighbor, subtree2, root_neighbour)
-            if subtree2_key not in memory:
-                memory[subtree2_key] = find_colors(graph, node_neighbor, subtree2, root_neighbour, memory)
-            
-            colors2 = memory[subtree2_key]
-            
-            for c1, c2 in itertools.product(colors1, colors2):
-                if c1.isdisjoint(c2):
-                    colors.append(set.union(c1, c2))
-        
-        return colors
+        for node in tree.neighbors(root):
+            if node is not visited:
+                visited = node
+                for subtree in generate_k_vertex_subtrees(tree, node, k-1, visited=visited):
+                    subtree.add_edge(root, node)
+                    # if len(subtree.nodes) == k:
+                    #     yield subtree
+                    yield subtree
 
 
 def color_coding(graph, tree):
+    n = len(graph.nodes)
     k = len(tree.nodes)
 
-    num_repeats = math.ceil(math.exp(k))
-    # num_repeats = 100
+    # random coloring
+    for v in graph.nodes:
+        graph.nodes[v]['color'] = random.choice(range(k))
+
+    memory = defaultdict(list)
+    for c in range(k):
+        for root in range(k):
+            for subtree in generate_k_vertex_subtrees(tree, root, 1):
+                for node in range(n):
+                    key = (node, subtree, root)
+                    if graph.nodes[node]['color'] == c:
+                        memory[key].append({c})
     
-    for _ in tqdm(range(num_repeats)):
-        # random coloring
-        for v in graph.nodes:
-            graph.nodes[v]['color'] = random.choice(range(k))
+    for i in range(2, k+1):
+        for colors in itertools.combinations(range(k), i):
+            for root in range(k):
+                for subtree in generate_k_vertex_subtrees(tree, root, i):
+                    for node in range(n):
+                        for node_neighbor in graph.neighbors(node):
+                            key = (node, subtree2, root)
+                            subtree2 = subtree.copy()
+                            subtree2.add_node(node_neighbor)
+                            if colors.isdisjoint(memory[(node_neighbor, subtree2, root)]):
+                                memory[key].append(colors)
 
-        root = random.choice(range(k))
-        memory = {}
-        for node in range(len(graph.nodes)):
-            colors = find_colors(graph, node, tree, root, memory)
-            if colors:
-                return True
-
+    print(memory)
     return False
 
 
