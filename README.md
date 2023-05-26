@@ -1,5 +1,6 @@
 # Color Coding
 
+<img src="./graph_tree.png"></img>
 Implementation of a <a href="https://dl.acm.org/doi/pdf/10.1145/210332.210337">color coding</a> method for the problem of finding a subtree with k vertices in a graph written in Python.
 
 ## Install
@@ -11,7 +12,7 @@ pip install -e .
 ## Usage
 
 ```python
-python src/main.py
+python src/dynamic_programming_implementation.py -n 10 -k 5 --seed 42
 ```
 
 ## Citations
