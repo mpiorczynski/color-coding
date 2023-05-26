@@ -3,11 +3,13 @@ import networkx as nx
 import math
 import random
 import numpy as np
+import itertools
+from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
 
 seed = 123
-n = 10
-k = 10
+n = 100
+k = 5
 
 random.seed(seed)
 np.random.seed(seed)
@@ -17,9 +19,9 @@ def find_colors(graph, node, tree, root):
     # print(f"Tree nodes: {tree.nodes}")
 
     if len(tree.nodes) == 1:
-        return({graph.nodes[node]['color']})
+        return([{graph.nodes[node]['color']}])
     else:
-        colors = set()
+        colors = []
         tree = tree.copy()
 
         root_neighbour = random.choice(list(tree.neighbors(root)))
@@ -34,15 +36,22 @@ def find_colors(graph, node, tree, root):
         # print(colors1)
         for node_neighbor in graph.neighbors(node):
             colors2 = find_colors(graph, node_neighbor, subtree2, root_neighbour)
-            if colors1.isdisjoint(colors2):
-                colors = colors.union(colors1).union(colors2)
+
+            for c1, c2 in itertools.product(colors1, colors2):
+                if c1.isdisjoint(c2):
+                    colors.append(set.union(c1, c2))
         
         return colors
 
 
 def color_coding(graph, tree):
     k = len(tree.nodes)
-    for _ in range(math.ceil(math.exp(k))):
+
+    num_repeats = math.ceil(math.exp(k))
+    # num_repeats = 100
+    print("Number of repeats: ", num_repeats)
+
+    for _ in tqdm(range(num_repeats)):
         # random coloring
         for v in graph.nodes:
             graph.nodes[v]['color'] = random.choice(range(k))
