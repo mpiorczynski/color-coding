@@ -6,13 +6,9 @@ import numpy as np
 import itertools
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
+import argparse
+from texttable import Texttable
 
-seed = 123
-n = 100
-k = 5
-
-random.seed(seed)
-np.random.seed(seed)
 
 def find_colors(graph, node, tree, root, memory):
     # print(f"Tree root: {root}")
@@ -58,7 +54,6 @@ def color_coding(graph, tree):
 
     num_repeats = math.ceil(math.exp(k))
     # num_repeats = 100
-    print("Number of repeats: ", num_repeats)
     
     for _ in tqdm(range(num_repeats)):
         # random coloring
@@ -77,20 +72,39 @@ def color_coding(graph, tree):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run Color Coding.")
+    parser.add_argument("-n", type=int, default=100, help="Number of vertices in the graph.")
+    parser.add_argument("-k", type=int, default=5, help="Number of vertices in the tree.")
+    parser.add_argument("--seed", type=int, default=123, help="Random seed.")
+
+    args = parser.parse_args()
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+
+    t = Texttable()
+    t.add_rows([["Parameter", "Value"],
+                ["Number of vertices in the graph.", args.n],
+                ["Number of vertices in the tree.", args.k],
+                ["Random seed.", args.seed],
+                ["Number of repeats.", math.ceil(math.exp(args.k))]
+    ])
+    print(t.draw())
+
     # generate random graph using erdos renyi model
-    graph = nx.erdos_renyi_graph(n, p=0.1, seed=seed)
-
-    fig = plt.figure()
-    nx.draw(graph, with_labels=False, width=0.1, node_size=10, ax=fig.add_subplot())
-    fig.savefig("graph.png")
-
+    graph = nx.erdos_renyi_graph(args.n, p=0.1, seed=args.seed)
+    
     # generate random tree
-    tree = nx.random_tree(k, seed=seed)
+    tree = nx.random_tree(args.k, seed=args.seed)
 
-    fig = plt.figure()
-    nx.draw(tree, with_labels=True, node_size=10, ax=fig.add_subplot())
-    fig.savefig("tree.png")
+    # plot graph and tree
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+    ax1.set_title("Graph")
+    ax2.set_title("Tree")
+    nx.draw(graph, with_labels=False, width=0.1, node_size=10, ax=ax1)
+    nx.draw(tree, with_labels=False, width=0.1, node_size=10, ax=ax2)
+    fig.savefig("graph_tree.png")
 
     # run color coding
     flag = color_coding(graph, tree)
-    print(f"Is there a subtree with {k} vertices in the graph?: {flag}")
+    print(f"Is there a subtree with {args.k} vertices in the graph?: {flag}")
