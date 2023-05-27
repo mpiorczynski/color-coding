@@ -28,7 +28,7 @@ def find_colors(graph, node, tree, root, memory):
         if root_neighbour in subtree1.nodes:
             subtree1, subtree2 = subtree2, subtree1
         
-        subtree1_key = (node, subtree1, root)
+        subtree1_key = (node, tuple(subtree1.nodes), root)
         if subtree1_key not in memory:
             memory[subtree1_key] = find_colors(graph, node, subtree1, root, memory)
         
@@ -36,7 +36,7 @@ def find_colors(graph, node, tree, root, memory):
 
         # print(colors1)
         for node_neighbor in graph.neighbors(node):
-            subtree2_key = (node_neighbor, subtree2, root_neighbour)
+            subtree2_key = (node_neighbor, tuple(subtree2.nodes), root_neighbour)
             if subtree2_key not in memory:
                 memory[subtree2_key] = find_colors(graph, node_neighbor, subtree2, root_neighbour, memory)
             
