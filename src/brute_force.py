@@ -20,12 +20,18 @@ def find_isomorphic_subtree(graph, tree):
     """
     nodes = list(graph.nodes)
     k = len(tree.nodes)
+    tree_adj = nx.adjacency_matrix(tree).todense()
 
     # Generate all possible combinations of nodes for subgraph of input size
     for combination in tqdm(itertools.combinations(nodes, k), desc="Looking for isomorphic subtree"):
-        subgraph = graph.subgraph(combination)
-        if nx.is_isomorphic(subgraph, tree):
-            return True
+        subgraph_adj = nx.adjacency_matrix(graph, combination).todense()
+        if np.sum(subgraph_adj) / 2 < k - 1:
+            continue
+        else:
+            for p in itertools.permutations(range(k)):
+                if np.all(subgraph_adj[p, :][:, p] - tree_adj >= 0):
+                    return True
+
     return False
 
 
