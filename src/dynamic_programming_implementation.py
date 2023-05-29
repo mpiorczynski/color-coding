@@ -15,16 +15,17 @@ def find_colors(graph, node, tree, root, memory):
     # print(f"Tree nodes: {tree.nodes}")
 
     if len(tree.nodes) == 1:
-        return([{graph.nodes[node]['color']}])
+        return [{graph.nodes[node]['color']}]
     else:
         colors = []
-        tree = tree.copy()
+        tree_without_edge = tree.copy()
 
         root_neighbour = random.choice(list(tree.neighbors(root)))
         # print(f"Splitting at: ({root}, {root_neighbour})")
-        tree.remove_edge(root, root_neighbour)
+        tree_without_edge.remove_edge(root, root_neighbour)
 
-        subtree1, subtree2 = (tree.subgraph(c).copy() for c in nx.connected_components(tree))  # components sorted by size
+        connected_components = [tree_without_edge.subgraph(c) for c in nx.connected_components(tree_without_edge)]  # components sorted by size
+        subtree1, subtree2 = connected_components[:2]
         if root_neighbour in subtree1.nodes:
             subtree1, subtree2 = subtree2, subtree1
         
@@ -50,25 +51,25 @@ def find_colors(graph, node, tree, root, memory):
 
 
 def color_coding(graph, tree):
-    k = len(tree.nodes)
+    num_tree_nodes = len(tree.nodes)
+    num_nodes = len(graph.nodes)
 
-    num_repeats = math.ceil(math.exp(k))
+    num_repeats = math.ceil(math.exp(num_tree_nodes))
+    root_choices = list(range(num_tree_nodes))
     # num_repeats = 100
     
     for _ in tqdm(range(num_repeats)):
         # random coloring
         for v in graph.nodes:
-            graph.nodes[v]['color'] = random.choice(range(k))
+            graph.nodes[v]['color'] = random.choice(root_choices)
 
-        root = random.choice(range(k))
+        root = random.choice(root_choices)
         memory = {}
-        for node in range(len(graph.nodes)):
+        for node in range(num_nodes):
             colors = find_colors(graph, node, tree, root, memory)
             if colors:
                 return True
-
     return False
-
 
 
 if __name__ == "__main__":
