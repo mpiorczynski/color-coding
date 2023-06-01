@@ -1,7 +1,7 @@
 """Implementation of classic rooted tree structure for constant time tree splitting in color coding algorithm."""
 import copy 
 from typing import List, Any
-from networkx import nx
+import networkx as nx
 import random
 
 
