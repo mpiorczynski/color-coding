@@ -1,6 +1,7 @@
 import networkx as nx
 from subtree_isomorphism import IsomorphicSubtreeFinder
 from utils import parse_args, print_config, set_seed, plot_graph_tree
+import time
 
 def main():
     """
@@ -22,10 +23,11 @@ def main():
     # plot graph and tree
     plot_graph_tree(graph, tree)
 
+    start = time.time()
     finder = IsomorphicSubtreeFinder()
     flag = finder.find(graph, tree, args.algorithm)
-
+    end = time.time()
     print(f"Is there a subtree with {args.k} vertices in the graph with {args.n} vertices?: {flag}")
-
+    print(f"Elapsed time: {end - start}")
 if __name__ == "__main__":
     main()
