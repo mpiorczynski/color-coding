@@ -1,3 +1,6 @@
+# Ignore generated data
+data/
+
 # IDE
 .vscode/
 .idea/

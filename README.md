@@ -6,13 +6,15 @@ Implementation of a <a href="https://dl.acm.org/doi/pdf/10.1145/210332.210337">c
 ## Install
 
 ```bash
-pip install -e .
+git clone https://github.com/mpiorczynski/color-coding.git
+cd color-coding
+pip install -r requirements.txt
 ```
 
 ## Usage
 
 ```python
-python src/dynamic_programming_implementation.py -n 10 -k 5 --seed 42
+python src/main.py -n 10 -k 5 --seed 42 --algorithm color_coding
 ```
 
 ## Citations
@@ -28,6 +30,7 @@ python src/dynamic_programming_implementation.py -n 10 -k 5 --seed 42
     doi = {10.1145/195058.195179}
 }
 ```
+
 ```bibtex
 @article{alon2008biomolecular,
   title={Biomolecular network motif counting and discovery by color coding},
