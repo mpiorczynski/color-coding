@@ -24,6 +24,9 @@ python src/graphs/generate_graphs.py
 python src/tests/benchmark.py
 ```
 
+### Benchmark results:
+<img src="./results/benchmark_results.png" width="50%" ></img>
+
 ## Citations
 
 ```bibtex
