@@ -4,15 +4,10 @@ import math
 import random
 import itertools
 from tqdm.auto import tqdm
-from tree import Tree
+from src.algorithms.tree import Tree
     
-def color_graph(graph, colors):
-    """
-    Function randomly colors graph using given colors.
-    :param graph: graph to color
-    :param colors: colors to use
-    :return: colored graph
-    """
+def color_graph(graph: nx.Graph, colors: int):
+    """Randomly color graph nodes with colors in range 0 to k-1."""
     for v in graph.nodes:
         graph.nodes[v]['color'] = random.choice(colors)
     return graph
@@ -44,21 +39,16 @@ def find_colors(graph, node, tree, memory):
         return colors
 
 
-def find_isomorphic_subtree(graph, tree):
-    """
-    Function solves tree subgraph isomorphism problem.
-    :param graph: graph in which we are looking for an isomorphic subtree
-    :param tree: tree isomorphic to the subtree we are looking for
-    :return: True or False
-    """
+def find_isomorphic_subtree(graph: nx.Graph, tree: nx.Graph) -> bool:
+    """Find an isomorphic subtree in a graph using color coding."""
     # Parse from NetworkX object to custom object for efficient constant time splitting
     tree = Tree.from_networkx(tree)
 
     num_nodes = graph.number_of_nodes()
     num_tree_nodes = tree.number_of_nodes()
 
+    # numbe of repeats for constant error probability
     num_repeats = math.ceil(math.exp(num_tree_nodes))
-    # num_repeats = 100
     
     for _ in tqdm(range(num_repeats), desc="Looking for an isomorphic subtree."):
         graph = color_graph(graph, range(num_tree_nodes))

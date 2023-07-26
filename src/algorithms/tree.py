@@ -25,7 +25,7 @@ class Tree:
         self.nodes = set.union(self.nodes, subtree.nodes)
     
     @staticmethod
-    def from_networkx(nx_tree: nx.classes.graph.Graph):
+    def from_networkx(nx_tree: nx.Graph):
         root = random.choice(list(nx_tree.nodes))
 
         # BFS
@@ -63,7 +63,7 @@ class Tree:
         return subtree1, subtree2
     
 
-    def to_networkx(self) -> nx.classes.graph.Graph:
+    def to_networkx(self) -> nx.Graph:
         tree = nx.Graph()
 
         if not self.children:

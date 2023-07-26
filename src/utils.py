@@ -1,22 +1,23 @@
 """Utility functions for the project."""
 
-import pandas as pd
-import networkx as nx
-from texttable import Texttable
-import numpy as np
-import matplotlib.pyplot as plt
-import random
 import argparse
-import seaborn as sns
+import os
+import random
+from pathlib import Path
 
-def print_config(num_nodes, num_edges, num_tree_nodes, algorithm, seed):
-    """
-    Function to print the logs in a nice tabular format.
-    :param args: Parameters used for the model.
-    """
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from texttable import Texttable
+
+
+def print_config(graph_path, num_nodes, num_edges, num_tree_nodes, algorithm, seed):
+    """Print logs in a nice tabular format."""
     t = Texttable()
     t.add_rows([["Parameter", "Value"],
-                ["Graph type", "Erdos-Renyi"],
+                ["Graph path", graph_path],
                 ["Number of vertices in the graph", num_nodes],
                 ["Number of edges in the graph", num_edges],
                 ["Number of vertices in the tree", num_tree_nodes],
@@ -25,36 +26,39 @@ def print_config(num_nodes, num_edges, num_tree_nodes, algorithm, seed):
     ])
     print(t.draw())
 
-def read_graph(path):
-    """
-    Function to read the graph from the path.
-    :param path: Path to the edge list.
-    :return graph: NetworkX object returned.
-    """
+def read_graph(path: str) -> nx.Graph:
+    """Read graph in a edgelist format."""
     graph = nx.read_edgelist(path, delimiter=",", nodetype=int)
     graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
 
-
-def save_graph(graph, path):
-    """
-    Function to save a graph in a edgelist format.
-    :param graph: Graph to save.
-    :param path: Path where save.
-    """
+def save_graph(graph: nx.Graph, path: str):
+    """Save graph in a edgelist format."""
+    Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
+    graph = add_selfloops_for_isolated(graph)
     nx.write_edgelist(graph, path, delimiter=",", data=False)
 
+def add_selfloops_for_isolated(graph: nx.Graph):
+    """Utility function to add self loops to a graph to save isolated nodes in edgelist format."""
+    isolated_nodes = [node for node in graph.nodes if graph.degree(node) == 0]
+    for node in isolated_nodes:
+        graph.add_edge(node, node)
+
+    return graph
+
 def parse_args():
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Run isomorphic subtree search.")
-    parser.add_argument("-n", type=int, default=100, help="Number of vertices in the graph.")
-    parser.add_argument("-k", type=int, default=5, help="Number of vertices in the tree.")
-    parser.add_argument("--seed", type=int, default=123, help="Random seed.")
+    parser.add_argument("--graph_path", type=str, default="data/erdos_renyi/erdos_renyi_100_0.1_123.edgelist", help="Input graph path.")
+    parser.add_argument("--num_tree_nodes", type=int, default=5, help="Number of nodes in the tree.")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed.")
     parser.add_argument("--algorithm", type=str, default="color_coding", choices=["brute_force", "color_coding"], help="Algorithm to implementation run.")
 
     args = parser.parse_args()
     return args
 
-def set_seed(seed):
+def set_seed(seed: int):
+    """Set random seed for reproducibility."""
     random.seed(seed)
     np.random.seed(seed)
 
@@ -68,7 +72,8 @@ def plot_graph_tree(graph, tree):
     fig.savefig("graph_tree.png")
 
 
-def plot_degree_distribution(graph):
+def plot_degree_distribution(graph: nx.Graph):
+    """Plot degree distribution of a graph."""
     degrees = [graph.degree(n) for n in graph.nodes]
     sns.histplot(degrees, binwidth=1)
     plt.xlabel('Degree')
@@ -76,7 +81,8 @@ def plot_degree_distribution(graph):
     plt.title('Degree Distribution')
     plt.show()
 
-def network_summary(network):
+def network_summary(network: nx.Graph):
+    """Calculate summary statistics for a network."""
     summary = {}
 
     summary['num_nodes'] = nx.number_of_nodes(network)

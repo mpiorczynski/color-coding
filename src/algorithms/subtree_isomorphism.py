@@ -1,5 +1,5 @@
-import color_coding as cc
-import brute_force as bf
+import src.algorithms.color_coding as cc
+import src.algorithms.brute_force as bf
 
 
 class IsomorphicSubtreeFinder:

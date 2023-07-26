@@ -5,13 +5,8 @@ import numpy as np
 import itertools
 from tqdm.auto import tqdm
 
-def find_isomorphic_subtree(graph, tree):
-    """
-    Function solves tree subgraph isomorphism problem (brute force approach).
-    :param graph: graph in which we are looking for an isomorphic subtree
-    :param tree: tree isomorphic to the subtree we are looking for
-    :return: True or False
-    """
+def find_isomorphic_subtree(graph: nx.Graph, tree: nx.Graph) -> bool:
+    """Find an isomorphic subtree in a graph using brute force."""
     nodes = list(graph.nodes)
     num_tree_nodes = len(tree.nodes)
     num_nodes = len(graph.nodes)
