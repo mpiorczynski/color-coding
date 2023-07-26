@@ -1,6 +1,8 @@
 # Color coding
+<p align="center">
+  <img src="./graph_tree.png"></img>
+</p>
 
-<img src="./graph_tree.png"></img>
 Implementation of a <a href="https://dl.acm.org/doi/pdf/10.1145/210332.210337">color coding</a> method for the problem of finding a subtree with k vertices in a given graph written in Python.
 
 ## Install
@@ -25,7 +27,9 @@ python src/tests/benchmark.py
 ```
 
 ### Benchmark results:
-<img src="./results/benchmark_results.png" width="50%" ></img>
+<p align="center">
+  <img src="./results/benchmark_results.png" width="60%"/>
+</p>
 
 ## Citations
 
