@@ -49,10 +49,10 @@ def add_selfloops_for_isolated(graph: nx.Graph):
 def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Run isomorphic subtree search.")
-    parser.add_argument("--graph_path", type=str, default="data/erdos_renyi/erdos_renyi_100_0.1_123.edgelist", help="Input graph path.")
+    parser.add_argument("--graph_path", type=str, help="Input graph path.")
     parser.add_argument("--num_tree_nodes", type=int, default=5, help="Number of nodes in the tree.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
-    parser.add_argument("--algorithm", type=str, default="color_coding", choices=["brute_force", "color_coding"], help="Algorithm to implementation run.")
+    parser.add_argument("--algorithm", type=str, default="color_coding", choices=["brute_force", "color_coding"], help="Algorithm implementation to run.")
 
     args = parser.parse_args()
     return args
@@ -70,6 +70,7 @@ def plot_graph_tree(graph, tree):
     nx.draw(graph, with_labels=False, width=0.1, node_size=10, ax=ax1)
     nx.draw(tree, with_labels=False, width=0.1, node_size=10, ax=ax2)
     fig.savefig("graph_tree.png")
+    print(f"Graph and tree figure saved to graph_tree.png")
 
 
 def plot_degree_distribution(graph: nx.Graph):

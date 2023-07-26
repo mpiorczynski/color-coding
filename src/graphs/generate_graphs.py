@@ -1,9 +1,4 @@
 """Generate data for testing."""
-import os
-import sys
-
-import networkx as nx
-
 from src.graphs.graphs_generators import (barabasi_albert_graph, complete_graph,
                                       erdos_renyi_graph, random_bipartite,
                                       random_tree, watts_strogatz_graph)

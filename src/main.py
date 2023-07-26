@@ -9,7 +9,10 @@ def main():
     set_seed(args.seed)
 
     # generate random graph using erdos renyi model
-    graph = read_graph(args.graph_path)
+    if args.graph_path is None:
+        graph = nx.erdos_renyi_graph(n=100, p=0.1, seed=args.seed)
+    else:
+        graph = read_graph(args.graph_path)
 
     # generate random tree
     tree = nx.random_tree(args.num_tree_nodes, seed=args.seed)
