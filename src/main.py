@@ -1,33 +1,34 @@
+"""Run isomorphic subtree search."""
 import networkx as nx
-from subtree_isomorphism import IsomorphicSubtreeFinder
-from utils import parse_args, print_config, set_seed, plot_graph_tree
+from src.algorithms.subtree_isomorphism import IsomorphicSubtreeFinder
+from src.utils import parse_args, print_config, set_seed, plot_graph_tree, read_graph
 import time
 
 def main():
-    """
-    Parsing command line parameters, reading data, find subtree, save to file.
-    """
     args = parse_args()
     set_seed(args.seed)
 
     # generate random graph using erdos renyi model
-    graph = nx.erdos_renyi_graph(args.n, p=args.n/1000, seed=args.seed)
-    # graph = read_graph("data/cora.edgelist")
+    if args.graph_path is None:
+        graph = nx.erdos_renyi_graph(n=100, p=0.1, seed=args.seed)
+    else:
+        graph = read_graph(args.graph_path)
 
     # generate random tree
-    tree = nx.random_tree(args.k, seed=args.seed)
+    tree = nx.random_tree(args.num_tree_nodes, seed=args.seed)
 
     # print config
-    print_config(graph.number_of_nodes(), graph.number_of_edges(), tree.number_of_nodes(), args.algorithm, args.seed)
+    print_config(args.graph_path, graph.number_of_nodes(), graph.number_of_edges(), tree.number_of_nodes(), args.algorithm, args.seed)
 
     # plot graph and tree
     plot_graph_tree(graph, tree)
 
-    start = time.time()
+    start = time.perf_counter()
     finder = IsomorphicSubtreeFinder()
-    flag = finder.find(graph, tree, args.algorithm)
-    end = time.time()
-    print(f"Is there a subtree with {args.k} vertices in the graph with {args.n} vertices?: {flag}")
-    print(f"Elapsed time: {end - start}")
+    found = finder.find(graph, tree, args.algorithm)
+    end = time.perf_counter()
+    runtime = end - start
+
+    print(f"Isomorphic tree{'' if found else 'not'} found (elapsed time: {runtime}s)")
 if __name__ == "__main__":
     main()

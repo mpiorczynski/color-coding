@@ -1,7 +1,7 @@
-# Color Coding
+# Color coding
 
 <img src="./graph_tree.png"></img>
-Implementation of a <a href="https://dl.acm.org/doi/pdf/10.1145/210332.210337">color coding</a> method for the problem of finding a subtree with k vertices in a graph written in Python.
+Implementation of a <a href="https://dl.acm.org/doi/pdf/10.1145/210332.210337">color coding</a> method for the problem of finding a subtree with k vertices in a given graph written in Python.
 
 ## Install
 
@@ -9,12 +9,19 @@ Implementation of a <a href="https://dl.acm.org/doi/pdf/10.1145/210332.210337">c
 git clone https://github.com/mpiorczynski/color-coding.git
 cd color-coding
 pip install -r requirements.txt
+export PYTHONPATH=.
 ```
 
 ## Usage
-
+To test on a single instance:
 ```python
-python src/main.py -n 10 -k 5 --seed 42 --algorithm color_coding
+python src/main.py
+```
+
+To run a full benchmark: 
+```python 
+python src/graphs/generate_graphs.py
+python src/tests/benchmark.py
 ```
 
 ## Citations
